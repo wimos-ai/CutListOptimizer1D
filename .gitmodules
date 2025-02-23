@@ -1,0 +1,3 @@
+[submodule "libs/cut-optimizer-1d"]
+	path = libs/cut-optimizer-1d
+	url = https://github.com/wimos-ai/cut-optimizer-1d
