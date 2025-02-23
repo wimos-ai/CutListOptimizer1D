@@ -5,3 +5,6 @@ edition = "2021"
 
 [dependencies]
 cut-optimizer-1d = { version = "0.2.2", path = "libs/cut-optimizer-1d" }
+gumdrop = "0.8"
+json = "0.12.4"
+

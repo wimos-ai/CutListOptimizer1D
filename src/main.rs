@@ -1,11 +1,15 @@
 // use super::*;
-use std::collections::HashMap;
-use std::result;
+
+mod command_line_parse;
+mod json_utils;
 
 use cut_optimizer_1d::*;
 
+use gumdrop::Options;
+use json_utils::Problem;
+
 fn build_optimizer() -> Optimizer {
-    const menards_pieces_2x4s: [cut_optimizer_1d::StockPiece; 11] = [
+    const MENARDS_PIECES_2X4S: [cut_optimizer_1d::StockPiece; 11] = [
         StockPiece {
             length: 36,
             price: 168,
@@ -65,7 +69,7 @@ fn build_optimizer() -> Optimizer {
 
     let mut optimizer = Optimizer::new();
 
-    optimizer.add_stock_pieces(menards_pieces_2x4s);
+    optimizer.add_stock_pieces(MENARDS_PIECES_2X4S);
 
     let cut_pieces_2x4s = [
         CutPiece {
@@ -116,19 +120,33 @@ fn build_optimizer() -> Optimizer {
 }
 
 fn main() {
-    let mut opt = build_optimizer();
-    let res = opt.set_cut_width(0).optimize(|_| {}).unwrap();
+    // let mut opt = build_optimizer();
+    // let res = opt.set_cut_width(0).optimize(|_| {}).unwrap();
 
-    // let _ = test();
+    // let _ = json_utils::test();
 
-    let mut map: HashMap<usize, usize> = HashMap::new();
-    for result in res.stock_pieces {
-        if map.contains_key(&result.length) {
-            *map.get_mut(&result.length).unwrap() += 1;
-        } else {
-            map.insert(result.length, 1);
-        }
+    // let mut map: HashMap<usize, usize> = HashMap::new();
+    // for result in res.stock_pieces {
+    //     if map.contains_key(&result.length) {
+    //         *map.get_mut(&result.length).unwrap() += 1;
+    //     } else {
+    //         map.insert(result.length, 1);
+    //     }
+    // }
+    // print!("I exist!");
+    // println!("Solution: {:#?}, fit: {:#?}", map, res.fitness);
+
+    let opts = command_line_parse::ProblemArgs::parse_args_default_or_exit();
+
+    let problems = Problem::from_json_files(
+        &opts.problem_files,
+        opts.cost_num_decimals,
+        opts.length_num_decimals,
+    );
+
+    for problem in problems {
+        println!("Problem: {:#?}", problem);
     }
-    print!("I exist!");
-    println!("Solution: {:#?}, fit: {:#?}", map, res.fitness);
+
+    println!("Opts: {:#?}", opts);
 }
