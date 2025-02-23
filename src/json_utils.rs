@@ -10,7 +10,7 @@ pub struct Problem {
 }
 
 #[derive(PartialEq, Eq)]
-struct Source_s {
+struct SourceS {
     tag: String,
     name: String,
     cost: usize,
@@ -18,13 +18,13 @@ struct Source_s {
     quantity: Option<usize>,
 }
 
-struct Cut_s {
+struct CutS {
     tag: String,
     length: usize,
     quantity: usize,
 }
 
-impl Into<StockPiece> for &Source_s {
+impl Into<StockPiece> for &SourceS {
     fn into(self) -> StockPiece {
         StockPiece {
             quantity: self.quantity,
@@ -34,7 +34,7 @@ impl Into<StockPiece> for &Source_s {
     }
 }
 
-impl Into<CutPiece> for &Cut_s {
+impl Into<CutPiece> for &CutS {
     fn into(self) -> CutPiece {
         CutPiece {
             external_id: None,
@@ -44,7 +44,7 @@ impl Into<CutPiece> for &Cut_s {
     }
 }
 
-fn i_pow(mut base: usize, exp: usize) -> usize {
+fn i_pow(base: usize, exp: usize) -> usize {
     let mut rv = base;
     for _ in 1..exp {
         rv *= base;
@@ -56,7 +56,7 @@ fn parse_json_file(
     file: &PathBuf,
     num_cost_decimals: usize,
     num_length_decimals: usize,
-) -> (Vec<Source_s>, Vec<Cut_s>) {
+) -> (Vec<SourceS>, Vec<CutS>) {
     if !file.is_file() {
         println!("Path: {:?} is not a file!", &file);
         return (Vec::new(), Vec::new());
@@ -100,7 +100,7 @@ fn parse_json_file(
             continue;
         }
 
-        sources_vec.push(Source_s {
+        sources_vec.push(SourceS {
             tag: tag.unwrap().to_string(),
             name: name.unwrap().to_string(),
             cost: (cost.unwrap() * i_pow(10, num_cost_decimals) as f64) as usize,
@@ -119,7 +119,7 @@ fn parse_json_file(
             println!("Json string: {} could not be parsed into a cut", cut);
             continue;
         }
-        cuts_vec.push(Cut_s {
+        cuts_vec.push(CutS {
             tag: tag.unwrap().to_string(),
             length: (length.unwrap() * i_pow(10, num_length_decimals) as f64) as usize,
             quantity: quantity.unwrap(),
@@ -130,6 +130,22 @@ fn parse_json_file(
 }
 
 impl Problem {
+    pub fn solve(
+        &self,
+        seed: Option<u64>,
+    ) -> Result<cut_optimizer_1d::Solution, cut_optimizer_1d::Error> {
+        let mut optimizer = Optimizer::new();
+
+        optimizer.add_cut_pieces(self.cuts.clone());
+        optimizer.add_stock_pieces(self.stock_pieces.clone());
+
+        if seed.is_some() {
+            optimizer.set_random_seed(seed.unwrap());
+        }
+
+        return optimizer.optimize(|_| {});
+    }
+
     fn new(tag: &String) -> Self {
         Problem {
             tag: tag.clone(),
@@ -139,7 +155,7 @@ impl Problem {
         }
     }
 
-    fn add_cut(&mut self, piece: &Cut_s) {
+    fn add_cut(&mut self, piece: &CutS) {
         if self.tag != piece.tag {
             return;
         }
@@ -153,7 +169,7 @@ impl Problem {
         }
     }
 
-    fn add_source(&mut self, source: &Source_s) {
+    fn add_source(&mut self, source: &SourceS) {
         if self.tag != source.tag {
             return;
         }

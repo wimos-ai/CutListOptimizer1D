@@ -3,10 +3,16 @@
 mod command_line_parse;
 mod json_utils;
 
+use std::collections::HashMap;
+
 use cut_optimizer_1d::*;
 
 use gumdrop::Options;
 use json_utils::Problem;
+
+fn pretty_print_result(problem: &Problem, res: &Solution) {
+    panic!("NOT IMPLEMENTED");
+}
 
 fn build_optimizer() -> Optimizer {
     const MENARDS_PIECES_2X4S: [cut_optimizer_1d::StockPiece; 11] = [
@@ -120,22 +126,6 @@ fn build_optimizer() -> Optimizer {
 }
 
 fn main() {
-    // let mut opt = build_optimizer();
-    // let res = opt.set_cut_width(0).optimize(|_| {}).unwrap();
-
-    // let _ = json_utils::test();
-
-    // let mut map: HashMap<usize, usize> = HashMap::new();
-    // for result in res.stock_pieces {
-    //     if map.contains_key(&result.length) {
-    //         *map.get_mut(&result.length).unwrap() += 1;
-    //     } else {
-    //         map.insert(result.length, 1);
-    //     }
-    // }
-    // print!("I exist!");
-    // println!("Solution: {:#?}, fit: {:#?}", map, res.fitness);
-
     let opts = command_line_parse::ProblemArgs::parse_args_default_or_exit();
 
     let problems = Problem::from_json_files(
@@ -146,6 +136,8 @@ fn main() {
 
     for problem in problems {
         println!("Problem: {:#?}", problem);
+        let sol = problem.solve(None).unwrap();
+        pretty_print_result(&problem, &sol);
     }
 
     println!("Opts: {:#?}", opts);

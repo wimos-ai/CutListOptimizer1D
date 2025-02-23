@@ -21,4 +21,7 @@ pub struct ProblemArgs {
         default = "2"
     )]
     pub length_num_decimals: usize,
+
+    #[options(help = "sets the seed of the internal solver")]
+    pub seed: Option<u64>,
 }
