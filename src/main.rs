@@ -3,6 +3,7 @@ mod json_utils;
 
 use gumdrop::Options;
 use json_utils::Problem;
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 fn main() {
     let opts = command_line_parse::ProblemArgs::parse_args_default_or_exit();
@@ -34,8 +35,15 @@ fn main() {
         );
     }
 
+    let seed = opts.seed.unwrap_or(rand::random());
+
     for problem in problems {
-        let sol = problem.solve(opts.seed, cut_width).unwrap();
+        let seeds = seed..seed + opts.search_count;
+        let sol = seeds
+            .into_par_iter()
+            .map(|s| problem.solve(Some(s), cut_width).unwrap())
+            .min_by(|a, b| a.get_cumulative_cost().cmp(&b.get_cumulative_cost()))
+            .unwrap();
 
         problem.pretty_print_result(&sol, opts.cost_num_decimals, opts.length_num_decimals);
     }

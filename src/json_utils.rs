@@ -222,10 +222,6 @@ impl Problem {
         return self.cuts.len() > 0 && self.stock_pieces.len() > 0;
     }
 
-    fn get_solution_cost(res: &Solution) -> usize {
-        res.stock_pieces.iter().map(|item| item.price).sum()
-    }
-
     fn get_purchase_order(&self, res: &Solution) -> Vec<Purchase> {
         let mut map: HashMap<&str, usize> = HashMap::new();
 
@@ -312,7 +308,7 @@ impl Problem {
         num_price_decimals: u32,
         num_length_decimals: u32,
     ) {
-        let solution_cost = Self::get_solution_cost(res);
+        let solution_cost = res.get_cumulative_cost();
         let solution_cost_upper = solution_cost / usize::pow(10, num_price_decimals);
         let solution_cost_lower = solution_cost % usize::pow(10, num_price_decimals);
         println!(

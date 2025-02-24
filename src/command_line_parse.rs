@@ -29,5 +29,8 @@ pub struct ProblemArgs {
     pub cut_width : f64,
 
     #[options(help = "toggles on logging of command line options", default="true")]
-    pub log_options : bool
+    pub log_options : bool,
+
+    #[options(help = "configures the size of the search space. Higher number is more compute and higher chance of finding an optimal solution", default="100")]
+    pub search_count : u64
 }
