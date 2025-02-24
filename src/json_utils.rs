@@ -254,6 +254,30 @@ impl Problem {
         purchases
     }
 
+    pub fn get_cut_list_length(&self, res: &Solution) -> usize{
+        let mut map: HashMap<(&str, Vec<usize>), usize> = HashMap::new();
+
+        for piece in &res.stock_pieces {
+            let name: &str = self
+                .source_names
+                .get(&SourceNameKey {
+                    length: piece.length,
+                    price: piece.price,
+                })
+                .unwrap();
+
+            let mut vec: Vec<usize> = Vec::new();
+            for cut in &piece.cut_pieces {
+                let len: usize = cut.end - cut.start;
+                vec.push(len);
+            }
+            vec.sort();
+
+            *map.entry((name, vec)).or_insert(0) += 1;
+        }
+        map.len()
+    }
+
     fn get_cut_list(&self, res: &Solution) -> Vec<CutOrder> {
         let mut map: HashMap<(&str, Vec<usize>), usize> = HashMap::new();
 

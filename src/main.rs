@@ -42,7 +42,16 @@ fn main() {
         let sol = seeds
             .into_par_iter()
             .map(|s| problem.solve(Some(s), cut_width).unwrap())
-            .min_by(|a, b| a.get_cumulative_cost().cmp(&b.get_cumulative_cost()))
+            .min_by(|a, b| {
+                let rv = a.get_cumulative_cost().cmp(&b.get_cumulative_cost());
+                if rv.is_eq() {
+                    problem
+                        .get_cut_list_length(a)
+                        .cmp(&problem.get_cut_list_length(b))
+                } else {
+                    rv
+                }
+            })
             .unwrap();
 
         problem.pretty_print_result(&sol, opts.cost_num_decimals, opts.length_num_decimals);
