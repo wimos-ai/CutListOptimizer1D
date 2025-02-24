@@ -31,7 +31,7 @@ struct CutS {
 }
 
 struct Purchase<'a> {
-    tag: &'a str,
+    name: &'a str,
     quantity: usize,
 }
 
@@ -251,10 +251,10 @@ impl Problem {
 
         let mut purchases: Vec<Purchase> = map
             .into_iter()
-            .map(|(tag, quantity)| Purchase { tag, quantity })
+            .map(|(tag, quantity)| Purchase { name: tag, quantity })
             .collect();
 
-        purchases.sort_by(|a, b| a.tag.cmp(b.tag));
+        purchases.sort_by(|a, b| a.name.cmp(b.name));
         purchases
     }
 
@@ -297,7 +297,7 @@ impl Problem {
     /*
     Something like this:
     For: 2x4, Cost: 21, Effiency: 98.23%
-        Purchase List (tag, quantity):
+        Purchase List (name, quantity):
             menards 2x4x1, 1
             menards 2x4x2, 2
             menards 2x4x3, 2
@@ -323,10 +323,10 @@ impl Problem {
             res.fitness * 100.0
         );
 
-        println!("\tPurchase List (tag, quantity):");
+        println!("\tPurchase List (name, quantity):");
         let purchase_order = self.get_purchase_order(res);
         for purchase in purchase_order {
-            println!("\t\t{}, {}", purchase.tag, purchase.quantity);
+            println!("\t\t{}, {}", purchase.name, purchase.quantity);
         }
 
         println!("\tCut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):");

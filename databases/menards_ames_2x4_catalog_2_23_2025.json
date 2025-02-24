@@ -1,0 +1,70 @@
+{
+    "sources": [
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x3'",
+            "cost": 1.68,
+            "length": 36
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x4'",
+            "cost": 1.86,
+            "length": 48
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x6'",
+            "cost": 2.57,
+            "length": 72
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x7'",
+            "cost": 2.65,
+            "length": 84
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x8'",
+            "cost": 3.11,
+            "length": 96
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x10'",
+            "cost": 4.11,
+            "length": 120
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x12'",
+            "cost": 4.71,
+            "length": 144
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x14'",
+            "cost": 6.13,
+            "length": 168
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x16'",
+            "cost": 7.49,
+            "length": 192
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x18'",
+            "cost": 9.34,
+            "length": 216
+        },
+        {
+            "tag": "2x4",
+            "name": "ames menards 2x4x20'",
+            "cost": 11.12,
+            "length": 240
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "sources": [
+        {
+            "tag": "2x4",
+            "name": "menards 2x4x1",
+            "cost": 1,
+            "length": 1
+        },
+        {
+            "tag": "2x4",
+            "name": "menards 2x4x2",
+            "cost": 3,
+            "length": 2
+        },
+        {
+            "tag": "2x4",
+            "name": "menards 2x4x3",
+            "cost": 7,
+            "length": 3
+        }
+    ],
+    "cuts": [
+        {
+            "tag": "2x4",
+            "length": 1,
+            "quantity": 1
+        },
+        {
+            "tag": "2x4",
+            "length": 2,
+            "quantity": 2
+        },
+        {
+            "tag": "2x4",
+            "length": 3,
+            "quantity": 2
+        }
+    ]
+}

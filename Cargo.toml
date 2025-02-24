@@ -7,4 +7,5 @@ edition = "2021"
 cut-optimizer-1d = { version = "0.2.2", path = "libs/cut-optimizer-1d" }
 gumdrop = "0.8"
 json = "0.12.4"
+rayon = "1.10.0"
 

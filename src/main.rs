@@ -35,9 +35,8 @@ fn main() {
     }
 
     for problem in problems {
-        // println!("Problem: {:#?}", problem);
         let sol = problem.solve(opts.seed, cut_width).unwrap();
-        // println!("{:#?}", sol.stock_pieces);
+
         problem.pretty_print_result(&sol, opts.cost_num_decimals, opts.length_num_decimals);
     }
 }

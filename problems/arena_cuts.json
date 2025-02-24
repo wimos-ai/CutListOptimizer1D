@@ -1,0 +1,102 @@
+{
+    "cuts": [
+        {
+            "tag": "1x1",
+            "length": 20.11,
+            "quantity": 4
+        },
+        {
+            "tag": "1x1",
+            "length": 3,
+            "quantity": 22
+        },
+        {
+            "tag": "1x1",
+            "length": 31,
+            "quantity": 2
+        },
+        {
+            "tag": "2x4",
+            "length": 21,
+            "quantity": 20
+        },
+        {
+            "tag": "2x4",
+            "length": 24,
+            "quantity": 12
+        },
+        {
+            "tag": "2x4",
+            "length": 41.375,
+            "quantity": 6
+        },
+        {
+            "tag": "2x4",
+            "length": 45,
+            "quantity": 16
+        },
+        {
+            "tag": "2x4",
+            "length": 48,
+            "quantity": 32
+        },
+        {
+            "tag": "2x4",
+            "length": 57.25,
+            "quantity": 4
+        },
+        {
+            "tag": "2x4",
+            "length": 73.02,
+            "quantity": 8
+        },
+        {
+            "tag": "2x4",
+            "length": 80,
+            "quantity": 36,
+            "note": "Hole"
+        },
+        {
+            "tag": "2x6",
+            "length": 196,
+            "quantity": 10
+        },
+        {
+            "tag": "2x6",
+            "length": 199,
+            "quantity": 2,
+            "note": "Chamfered"
+        },
+        {
+            "tag": "2x6",
+            "length": 21,
+            "quantity": 1
+        },
+        {
+            "tag": "2x6",
+            "length": 223,
+            "quantity": 2,
+            "note": "Chamfered"
+        },
+        {
+            "tag": "2x6",
+            "length": 24,
+            "quantity": 2
+        },
+        {
+            "tag": "2x6",
+            "length": 45,
+            "quantity": 8
+        },
+        {
+            "tag": "2x6",
+            "length": 48,
+            "quantity": 8
+        },
+        {
+            "tag": "4x4",
+            "length": 83,
+            "quantity": 4
+        }
+    ]
+}
