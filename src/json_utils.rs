@@ -41,6 +41,12 @@ struct CutOrder<'a> {
     cuts: Vec<usize>,
 }
 
+#[derive(Debug)]
+struct CutResult {
+    quantity: usize,
+    length: usize,
+}
+
 impl Into<StockPiece> for &SourceS {
     fn into(self) -> StockPiece {
         StockPiece {
@@ -247,14 +253,17 @@ impl Problem {
 
         let mut purchases: Vec<Purchase> = map
             .into_iter()
-            .map(|(tag, quantity)| Purchase { name: tag, quantity })
+            .map(|(tag, quantity)| Purchase {
+                name: tag,
+                quantity,
+            })
             .collect();
 
         purchases.sort_by(|a, b| a.name.cmp(b.name));
         purchases
     }
 
-    pub fn get_cut_list_length(&self, res: &Solution) -> usize{
+    pub fn get_cut_list_length(&self, res: &Solution) -> usize {
         let mut map: HashMap<(&str, Vec<usize>), usize> = HashMap::new();
 
         for piece in &res.stock_pieces {
@@ -309,8 +318,42 @@ impl Problem {
             })
             .collect();
 
-        cuts.sort_by(|a, b| a.name.cmp(b.name));
+        cuts.sort_by(|a, b| {
+            let rv = a.name.cmp(b.name);
+            if rv.is_eq() {
+                a.quantity.cmp(&b.quantity)
+            } else {
+                rv
+            }
+        });
 
+        cuts
+    }
+
+    fn get_result_list(&self, cut_list: &Vec<CutOrder>) -> Vec<CutResult> {
+        let mut map: HashMap<usize, usize> = HashMap::new();
+        for item in cut_list {
+            for cut in &item.cuts {
+                *map.entry(*cut).or_insert(0) += 1;
+            }
+        }
+
+        let mut cuts: Vec<CutResult> = map
+            .into_iter()
+            .map(|(len, quantity)| CutResult {
+                quantity: quantity,
+                length: len,
+            })
+            .collect();
+
+        cuts.sort_by(|a, b| {
+            let rv = a.quantity.cmp(&b.quantity);
+            if rv.is_eq() {
+                a.length.cmp(&b.length)
+            } else {
+                rv
+            }
+        });
         cuts
     }
 
@@ -343,15 +386,15 @@ impl Problem {
             res.fitness * 100.0
         );
 
-        println!("\tPurchase List (name, quantity):");
+        println!("\tPurchase List:");
         let purchase_order = self.get_purchase_order(res);
         for purchase in purchase_order {
-            println!("\t\t{}, {}", purchase.name, purchase.quantity);
+            println!("\t\t({}) {}", purchase.quantity, purchase.name);
         }
 
-        println!("\tCut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):");
+        println!("\tCut List:");
         let cuts = self.get_cut_list(res);
-        for cut in cuts {
+        for cut in &cuts {
             print!("\t\t({}) {} -> [", cut.quantity, cut.name);
             for idx in 0..cut.cuts.len() {
                 let length = cut.cuts[idx];
@@ -359,11 +402,19 @@ impl Problem {
                 let length_upper = length / usize::pow(10, num_length_decimals);
                 let length_lower = length % usize::pow(10, num_length_decimals);
                 print!("{}.{}", length_upper, length_lower);
-                if idx !=  cut.cuts.len() -1{
+                if idx != cut.cuts.len() - 1 {
                     print!(", ");
                 }
             }
             print!("]\n");
+        }
+
+        println!("\tResults:");
+        let cut_pieces = self.get_result_list(&cuts);
+        for piece in &cut_pieces {
+            let length_upper = piece.length / usize::pow(10, num_length_decimals);
+            let length_lower = piece.length % usize::pow(10, num_length_decimals);
+            println!("\t\t({}) {}.{}", piece.quantity, length_upper, length_lower)
         }
 
         // panic!("NOT IMPLEMENTED");
@@ -399,10 +450,12 @@ impl Problem {
             }
         }
 
-        tag_to_problem
+        let mut problems: Vec<Problem> = tag_to_problem
             .values()
             .filter(|s| s.is_valid_problem())
             .cloned()
-            .collect()
+            .collect();
+        problems.sort_by(|a, b| a.tag.cmp(&b.tag));
+        problems
     }
 }

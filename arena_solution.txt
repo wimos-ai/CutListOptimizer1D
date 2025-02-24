@@ -3,33 +3,54 @@ Options:
 	--cost-num-decimals: 4
 	--length-num-decimals: 4
 	--cut-width: 0.125
-For: 2x6, Cost: 300.9600, Effiency: 72.99%
-	Purchase List (name, quantity):
-		ames menards 2x6x20', 18
-	Cut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):
-		(2) ames menards 2x6x20' -> [223.0]
-		(1) ames menards 2x6x20' -> [45.0]
-		(9) ames menards 2x6x20' -> [196.0]
-		(2) ames menards 2x6x20' -> [45.0, 48.0, 48.0, 48.0, 48.0]
-		(1) ames menards 2x6x20' -> [45.0, 45.0, 45.0, 45.0, 45.0]
-		(2) ames menards 2x6x20' -> [24.0, 199.0]
-		(1) ames menards 2x6x20' -> [21.0, 196.0]
 For: 1x1, Cost: 35.0, Effiency: 76.81%
-	Purchase List (name, quantity):
-		ankeny HomeDepot 1x1x10', 2
-	Cut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):
+	Purchase List:
+		(2) ankeny HomeDepot 1x1x10'
+	Cut List:
 		(1) ankeny HomeDepot 1x1x10' -> [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 20.1100, 31.0]
 		(1) ankeny HomeDepot 1x1x10' -> [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 20.1100, 20.1100, 20.1100, 31.0]
+	Results:
+		(2) 31.0
+		(4) 20.1100
+		(22) 3.0
 For: 2x4, Cost: 240.2100, Effiency: 88.65%
-	Purchase List (name, quantity):
-		ames menards 2x4x12', 51
-	Cut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):
-		(4) ames menards 2x4x12' -> [21.0, 21.0, 21.0, 80.0]
-		(6) ames menards 2x4x12' -> [24.0, 45.0, 73.200]
+	Purchase List:
+		(51) ames menards 2x4x12'
+	Cut List:
 		(2) ames menards 2x4x12' -> [21.0, 48.0, 73.200]
 		(3) ames menards 2x4x12' -> [45.0, 80.0]
 		(3) ames menards 2x4x12' -> [24.0, 24.0, 80.0]
-		(7) ames menards 2x4x12' -> [45.0, 48.0, 48.0]
-		(6) ames menards 2x4x12' -> [21.0, 41.3750, 80.0]
-		(16) ames menards 2x4x12' -> [48.0, 80.0]
+		(4) ames menards 2x4x12' -> [21.0, 21.0, 21.0, 80.0]
 		(4) ames menards 2x4x12' -> [57.2500, 80.0]
+		(6) ames menards 2x4x12' -> [21.0, 41.3750, 80.0]
+		(6) ames menards 2x4x12' -> [24.0, 45.0, 73.200]
+		(7) ames menards 2x4x12' -> [45.0, 48.0, 48.0]
+		(16) ames menards 2x4x12' -> [48.0, 80.0]
+	Results:
+		(1) 41.3750
+		(1) 57.2500
+		(2) 73.200
+		(3) 24.0
+		(3) 45.0
+		(4) 48.0
+		(5) 21.0
+		(6) 80.0
+For: 2x6, Cost: 300.9600, Effiency: 72.99%
+	Purchase List:
+		(18) ames menards 2x6x20'
+	Cut List:
+		(1) ames menards 2x6x20' -> [21.0, 196.0]
+		(1) ames menards 2x6x20' -> [45.0]
+		(1) ames menards 2x6x20' -> [45.0, 45.0, 45.0, 45.0, 45.0]
+		(2) ames menards 2x6x20' -> [24.0, 199.0]
+		(2) ames menards 2x6x20' -> [45.0, 48.0, 48.0, 48.0, 48.0]
+		(2) ames menards 2x6x20' -> [223.0]
+		(9) ames menards 2x6x20' -> [196.0]
+	Results:
+		(1) 21.0
+		(1) 24.0
+		(1) 199.0
+		(1) 223.0
+		(2) 196.0
+		(4) 48.0
+		(7) 45.0
