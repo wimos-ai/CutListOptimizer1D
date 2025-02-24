@@ -1,10 +1,16 @@
 use cut_optimizer_1d::*;
 use std::{collections::HashMap, fs::File, io::Read, path::PathBuf, usize};
 
+#[derive(Eq, PartialEq, Hash, Debug, Clone)]
+struct SourceNameKey {
+    pub length: usize,
+    pub price: usize,
+}
+
 #[derive(Debug, Clone)]
 pub struct Problem {
     tag: String,
-    source_names: HashMap<StockPiece, String>,
+    source_names: HashMap<SourceNameKey, String>,
     stock_pieces: Vec<StockPiece>,
     cuts: Vec<CutPiece>,
 }
@@ -22,6 +28,17 @@ struct CutS {
     tag: String,
     length: usize,
     quantity: usize,
+}
+
+struct Purchase<'a> {
+    tag: &'a str,
+    quantity: usize,
+}
+
+struct CutOrder<'a> {
+    quantity: usize,
+    name: &'a str,
+    cuts: Vec<usize>,
 }
 
 impl Into<StockPiece> for &SourceS {
@@ -44,18 +61,10 @@ impl Into<CutPiece> for &CutS {
     }
 }
 
-fn i_pow(base: usize, exp: usize) -> usize {
-    let mut rv = base;
-    for _ in 1..exp {
-        rv *= base;
-    }
-    return rv;
-}
-
 fn parse_json_file(
     file: &PathBuf,
-    num_cost_decimals: usize,
-    num_length_decimals: usize,
+    num_cost_decimals: u32,
+    num_length_decimals: u32,
 ) -> (Vec<SourceS>, Vec<CutS>) {
     if !file.is_file() {
         println!("Path: {:?} is not a file!", &file);
@@ -103,8 +112,8 @@ fn parse_json_file(
         sources_vec.push(SourceS {
             tag: tag.unwrap().to_string(),
             name: name.unwrap().to_string(),
-            cost: (cost.unwrap() * i_pow(10, num_cost_decimals) as f64) as usize,
-            length: (length.unwrap() * i_pow(10, num_length_decimals) as f64) as usize,
+            cost: (cost.unwrap() * usize::pow(10, num_cost_decimals) as f64) as usize,
+            length: (length.unwrap() * usize::pow(10, num_length_decimals) as f64) as usize,
             quantity: *quantity,
         });
     }
@@ -121,7 +130,7 @@ fn parse_json_file(
         }
         cuts_vec.push(CutS {
             tag: tag.unwrap().to_string(),
-            length: (length.unwrap() * i_pow(10, num_length_decimals) as f64) as usize,
+            length: (length.unwrap() * usize::pow(10, num_length_decimals) as f64) as usize,
             quantity: quantity.unwrap(),
         });
     }
@@ -133,6 +142,7 @@ impl Problem {
     pub fn solve(
         &self,
         seed: Option<u64>,
+        cut_width: Option<usize>,
     ) -> Result<cut_optimizer_1d::Solution, cut_optimizer_1d::Error> {
         let mut optimizer = Optimizer::new();
 
@@ -141,6 +151,10 @@ impl Problem {
 
         if seed.is_some() {
             optimizer.set_random_seed(seed.unwrap());
+        }
+
+        if cut_width.is_some() {
+            optimizer.set_cut_width(cut_width.unwrap());
         }
 
         return optimizer.optimize(|_| {});
@@ -182,12 +196,24 @@ impl Problem {
             None => {
                 let s: StockPiece = source.into();
                 self.stock_pieces.push(s);
-                self.source_names.insert(s, source.name.clone());
+                self.source_names.insert(
+                    SourceNameKey {
+                        length: source.length,
+                        price: source.cost,
+                    },
+                    source.name.clone(),
+                );
             }
 
             Some(value) => {
                 *value = source.into();
-                *self.source_names.get_mut(*&value).unwrap() = source.name.clone();
+                *self
+                    .source_names
+                    .get_mut(&SourceNameKey {
+                        length: value.length,
+                        price: value.price,
+                    })
+                    .unwrap() = source.name.clone();
             }
         }
     }
@@ -196,10 +222,137 @@ impl Problem {
         return self.cuts.len() > 0 && self.stock_pieces.len() > 0;
     }
 
+    fn get_solution_cost(res: &Solution) -> usize {
+        res.stock_pieces.iter().map(|item| item.price).sum()
+    }
+
+    fn get_purchase_order(&self, res: &Solution) -> Vec<Purchase> {
+        let mut map: HashMap<&str, usize> = HashMap::new();
+
+        for stock_piece in &res.stock_pieces {
+            let tag = self
+                .source_names
+                .get(&SourceNameKey {
+                    length: stock_piece.length,
+                    price: stock_piece.price,
+                })
+                .unwrap()
+                .as_str();
+
+            match map.get_mut(tag) {
+                None => {
+                    map.insert(tag, 1);
+                }
+                Some(s) => {
+                    *s += 1;
+                }
+            }
+        }
+
+        let mut purchases: Vec<Purchase> = map
+            .into_iter()
+            .map(|(tag, quantity)| Purchase { tag, quantity })
+            .collect();
+
+        purchases.sort_by(|a, b| a.tag.cmp(b.tag));
+        purchases
+    }
+
+    fn get_cut_list(&self, res: &Solution) -> Vec<CutOrder> {
+        let mut map: HashMap<(&str, Vec<usize>), usize> = HashMap::new();
+
+        for piece in &res.stock_pieces {
+            let name: &str = self
+                .source_names
+                .get(&SourceNameKey {
+                    length: piece.length,
+                    price: piece.price,
+                })
+                .unwrap();
+
+            let mut vec: Vec<usize> = Vec::new();
+            for cut in &piece.cut_pieces {
+                let len: usize = cut.end - cut.start;
+                vec.push(len);
+            }
+            vec.sort();
+
+            *map.entry((name, vec)).or_insert(0) += 1;
+        }
+
+        let mut cuts: Vec<CutOrder> = map
+            .into_iter()
+            .map(|(tup, quantity)| CutOrder {
+                quantity: quantity,
+                name: tup.0,
+                cuts: tup.1,
+            })
+            .collect();
+
+        cuts.sort_by(|a, b| a.name.cmp(b.name));
+
+        cuts
+    }
+
+    /*
+    Something like this:
+    For: 2x4, Cost: 21, Effiency: 98.23%
+        Purchase List (tag, quantity):
+            menards 2x4x1, 1
+            menards 2x4x2, 2
+            menards 2x4x3, 2
+        Cut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):
+            (1x) name -> [1]
+            (2x) name -> [2]
+            (2x) name -> [3]
+    */
+    pub fn pretty_print_result(
+        &self,
+        res: &Solution,
+        num_price_decimals: u32,
+        num_length_decimals: u32,
+    ) {
+        let solution_cost = Self::get_solution_cost(res);
+        let solution_cost_upper = solution_cost / usize::pow(10, num_price_decimals);
+        let solution_cost_lower = solution_cost % usize::pow(10, num_price_decimals);
+        println!(
+            "For: {}, Cost: {}.{}, Effiency: {:.2}%",
+            self.tag,
+            solution_cost_upper,
+            solution_cost_lower,
+            res.fitness * 100.0
+        );
+
+        println!("\tPurchase List (tag, quantity):");
+        let purchase_order = self.get_purchase_order(res);
+        for purchase in purchase_order {
+            println!("\t\t{}, {}", purchase.tag, purchase.quantity);
+        }
+
+        println!("\tCut List ((cut quantity) name -> [cutLength1, cutLength2, ...]):");
+        let cuts = self.get_cut_list(res);
+        for cut in cuts {
+            print!("\t\t({}) {} -> [", cut.quantity, cut.name);
+            for idx in 0..cut.cuts.len() {
+                let length = cut.cuts[idx];
+
+                let length_upper = length / usize::pow(10, num_length_decimals);
+                let length_lower = length % usize::pow(10, num_length_decimals);
+                print!("{}.{}", length_upper, length_lower);
+                if idx !=  cut.cuts.len() -1{
+                    print!(", ");
+                }
+            }
+            print!("]\n");
+        }
+
+        // panic!("NOT IMPLEMENTED");
+    }
+
     pub fn from_json_files(
         files: &Vec<PathBuf>,
-        num_cost_decimals: usize,
-        num_length_decimals: usize,
+        num_cost_decimals: u32,
+        num_length_decimals: u32,
     ) -> Vec<Problem> {
         let mut tag_to_problem: HashMap<String, Problem> = HashMap::new();
 

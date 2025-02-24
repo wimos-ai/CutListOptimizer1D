@@ -14,14 +14,20 @@ pub struct ProblemArgs {
         help = "controls how many floating point decimals to use in cost calculations",
         default = "2"
     )]
-    pub cost_num_decimals: usize,
+    pub cost_num_decimals: u32,
 
     #[options(
         help = "controls how many floating point decimals to use in length calculations",
         default = "2"
     )]
-    pub length_num_decimals: usize,
+    pub length_num_decimals: u32,
 
     #[options(help = "sets the seed of the internal solver")]
     pub seed: Option<u64>,
+
+    #[options(help = "sets the blade with when making cuts. Precision is affected by length_num_decimals", default="0")]
+    pub cut_width : f64,
+
+    #[options(help = "toggles on logging of command line options", default="true")]
+    pub log_options : bool
 }
