@@ -2,13 +2,18 @@
     "cuts": [
         {
             "tag": "1x1",
+            "length": 2,
+            "quantity": 4
+        },
+        {
+            "tag": "1x1",
             "length": 20.11,
             "quantity": 4
         },
         {
             "tag": "1x1",
             "length": 3,
-            "quantity": 22
+            "quantity": 26
         },
         {
             "tag": "1x1",
@@ -23,27 +28,17 @@
         {
             "tag": "2x4",
             "length": 24,
-            "quantity": 12
-        },
-        {
-            "tag": "2x4",
-            "length": 41.375,
-            "quantity": 6
+            "quantity": 10
         },
         {
             "tag": "2x4",
             "length": 45,
-            "quantity": 16
+            "quantity": 26
         },
         {
             "tag": "2x4",
             "length": 48,
             "quantity": 32
-        },
-        {
-            "tag": "2x4",
-            "length": 57.25,
-            "quantity": 4
         },
         {
             "tag": "2x4",
